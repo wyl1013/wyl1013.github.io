@@ -1,0 +1,92 @@
+<html lang="ch-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>The Matrix for Practice</title>
+    <style type="text/css">
+        * {
+            margin: 0 auto;
+            padding: 0 auto;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #0a0141, #cececf);
+            /* 使用溢出隐藏，为了实现一个全屏没有滚动条的效果 */
+            overflow: hidden;
+        }
+
+        /* h1 {
+            text-align: center;
+            color: green;
+            text-transform: uppercase;
+        } */
+        canvas{
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <h1>the matrix</h1> -->
+    <!-- 定义画布 -->
+    <canvas id="matrix"></canvas>
+
+    <script type="text/javascript">
+        // 获取画布元素
+        var matrix = document.getElementById("matrix");
+        // 通过getContext()方法,获取2D上下文对象
+        var context = matrix.getContext("2d");
+        // 为实现视口的全屏效果，将视口的高度与宽度赋值给画布
+        matrix.height = window.innerHeight;
+        matrix.width = window.innerWidth;
+        // 定义数组,动态改变y坐标
+        var drop = [];
+        var font_size = 16;
+        // 产生的字符雨的列数等于画布的宽度/字号b
+        var columns = matrix.width / font_size;
+        // 循环,让所有的drop都等1
+        for (var i = 0; i < columns; i++) {
+            drop[i] = 1;
+        }
+
+        function drawMatrix() {
+            // 填充2D上下文
+            context.fillStyle = "rgba(0, 0, 0, 0.1)";
+            // 绘制2D上下文的形状(x坐标,y坐标,矩形宽度,矩形高度)
+            context.fillRect(0, 0, matrix.width, matrix.height);
+
+            // 调用随机颜色的函数,赋值给到画布
+            context.fillStyle = randColor();
+
+            context.font = font_size + "px";
+            let arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+                'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+            ]
+            // 执行循环每次生成一个第i列的
+            for (var i = 0; i < columns; i++) {
+                // 绘制文本的三个参数:要绘制的文本字符串、x坐标()、y坐标()
+                
+                context.fillText(arr[Math.ceil(Math.random() * 25)], i * font_size, drop[i] *
+                    font_size); /*get A and Z*/// 因为上面的循环,每行都让y坐标处于一个值,第一行是16,第二行是32,第三行是48
+                // 如果文本纵坐标大于画布高度的2/3高度，并且随机数产生出来的数值比0.85大，则让drop[i]等于0
+                if (drop[i] * font_size > (matrix.height * 2 / 3) && Math.random() > 0.85) {
+                    // 满足条件时,就让drop[i]=0;下次就第i个的纵坐标就变成16了,再下一轮就会变成32.....
+                    drop[i] = 0;
+                }
+                // 此处的drop[i]的作用是,让每一行的drop[i]比上一行小1*16
+                drop[i]++;
+
+            }
+        }
+        // 定义一个随机产生颜色的函数
+        function randColor() {
+            let r = Math.floor(Math.random() * 256);
+            let g = Math.floor(Math.random() * 256);
+            let b = Math.floor(Math.random() * 256);
+            return 'rgb(' + r + ',' + g + ',' + b + ')'
+        }
+        setInterval(drawMatrix, 40);
+    </script>
+</body>
+
+</html>
